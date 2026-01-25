@@ -59,7 +59,6 @@ export default function InteractiveMap({
         }
         document.head.appendChild(script)
       } catch (error) {
-        console.log('Error loading Leaflet:', error)
         setError('Error cargando el mapa')
       }
     }
@@ -72,7 +71,6 @@ export default function InteractiveMap({
       let verification
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log(position.coords.latitude, position.coords.longitude)
           setUserPosition({
             lat: position.coords.latitude,
             lng: position.coords.longitude
@@ -84,7 +82,6 @@ export default function InteractiveMap({
           verification = true
         },
         (error) => {
-          console.log('Error obteniendo ubicación:', error)
           setError(
             'No se pudo obtener la ubicación. Usando ubicación por defecto.'
           )
@@ -224,7 +221,6 @@ export default function InteractiveMap({
       // Manejar clicks en el mapa
       map.on('click', (e: any) => {
         const { lat, lng } = e.latlng
-        console.log(lat, lng)
         // setDestinationPosition({ lat, lng })
         setGetlocation({ lat, lng })
       })
@@ -351,7 +347,9 @@ export default function InteractiveMap({
       )
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        alert(
+          'No se pudo calcular la ruta desde tu ubicación actual. Verifica que estés en una zona con acceso a calles o intenta mover el marcador a una vía cercana.'
+        )
       }
 
       const data = await response.json()

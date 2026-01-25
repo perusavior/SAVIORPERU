@@ -12,6 +12,7 @@ interface Product {
   image2?: string
   size?: string
   estado?: string
+  stock: number
 }
 
 // Array para skeletons
@@ -24,11 +25,6 @@ export default function FeaturedProducts() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log(
-        '🔄 [CLIENT] Iniciando fetch de productos destacados -',
-        new Date().toLocaleTimeString()
-      )
-
       try {
         setLoading(true)
 
@@ -39,11 +35,6 @@ export default function FeaturedProducts() {
         }
 
         const result = await response.json()
-
-        console.log(
-          '📊 [CLIENT] Productos destacados recibidos:',
-          result.data?.destacados.length || 0
-        )
 
         if (result.data.destacados) {
           setData(result.data.destacados)
@@ -81,7 +72,8 @@ export default function FeaturedProducts() {
                 id: item,
                 image: '/CargandoImagen.png',
                 name: 'Cargando...',
-                price: 0
+                price: 0,
+                stock: 0
               }}
               from='featured'
             />

@@ -86,7 +86,6 @@ export async function PUT(
     }
 
     const body = await req.json()
-    console.log('body', body)
     const validatedData = updateProductSchema.parse(body)
 
     const findCategory = await prisma.categories.findFirst({

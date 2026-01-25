@@ -48,11 +48,11 @@ const ImageManager: React.FC<ImageManagerProps> = ({
 
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('upload_preset', 'prueba_preset')
+    formData.append('upload_preset', 'saviorperu')
     formData.append('folder', 'ecommerce-products')
 
     const response = await fetch(
-      'https://api.cloudinary.com/v1_1/dniekrmqb/image/upload',
+      'https://api.cloudinary.com/v1_1/saviorperu/image/upload',
       {
         method: 'POST',
         body: formData
@@ -76,7 +76,6 @@ const ImageManager: React.FC<ImageManagerProps> = ({
     return optimizedUrl
   }
 
-  // console.log('imagenmainImage y subida', mainImage)
   // Manejar subida de imagen
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -90,9 +89,6 @@ const ImageManager: React.FC<ImageManagerProps> = ({
 
       setUploadedImages((prev) => [...prev, imageUrl])
 
-      console.log('imagen principal', mainImage)
-      console.log('imagen imageFrom', imageFrom)
-
       // Asignar automáticamente si falta alguna imagen
       if (!mainImage) {
         onMainImageChange(imageUrl)
@@ -101,8 +97,6 @@ const ImageManager: React.FC<ImageManagerProps> = ({
           onSecondaryImageChange(imageUrl)
         }
       } else if (imageFrom === 'systemImages') {
-        console.log('entro en else if')
-
         onMainImageChange(imageUrl)
       }
 
@@ -117,8 +111,6 @@ const ImageManager: React.FC<ImageManagerProps> = ({
 
   // Seleccionar imagen de la galería
   const handleSelectFromGallery = (images: string[]) => {
-    console.log('handleSelectFromGallery', images)
-
     if (images[0]) onMainImageChange(images[0])
     if (images[1] && onSecondaryImageChange) onSecondaryImageChange(images[1])
   }

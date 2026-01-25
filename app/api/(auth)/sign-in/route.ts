@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
         where: { id: user.id },
         data: { role: Role.ADMIN }
       })
-      console.log(`User created: ${user.email}`, `User Role: ${Role.ADMIN}`)
     } else {
       console.log(`User upserted: ${user.email}`, `User Role: ${user.role}`)
     }

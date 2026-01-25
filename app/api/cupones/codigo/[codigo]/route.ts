@@ -9,8 +9,6 @@ export async function GET(
   try {
     const { codigo } = await params
 
-    console.log('esto es codigo', codigo)
-
     if (!codigo || typeof codigo !== 'string') {
       return NextResponse.json({ error: 'Código inválido' }, { status: 400 })
     }

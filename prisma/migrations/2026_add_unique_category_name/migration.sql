@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX "Categories_name_key" ON "Categories"("name");

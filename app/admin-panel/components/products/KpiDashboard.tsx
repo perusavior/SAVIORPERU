@@ -8,8 +8,9 @@ import {
   MdAttachMoney,
   MdStar
 } from 'react-icons/md'
-import KpiCard from '../shared/KpiCard'
+// import KpiCard from '../shared/KpiCard'
 import type { KpiData } from '../types'
+import KpiCard from '../KpiCard'
 
 interface KpiDashboardProps {
   kpiData: KpiData

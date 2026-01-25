@@ -10,7 +10,7 @@
 @media screen and (max-width: 990px) {
   .heroSection {
     justify-content: center;
-    width: calc(100vw - 15px);
+    width: 100dvw;
   }
 
   .heroSection > div:nth-child(1) {
@@ -18,11 +18,11 @@
   }
 }
 
-@media (max-width: 500px) {
+/* @media (max-width: 768px) {
   .heroSection {
     @apply w-screen;
   }
-}
+} */
 
 /* Agregar a tu archivo hero-section.module.css */
 

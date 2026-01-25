@@ -3,7 +3,10 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ClipboardList, Menu } from 'lucide-react'
-import { MdOutlineShoppingCart, MdAdminPanelSettings } from 'react-icons/md'
+import { MdOutlineShoppingCart, MdOutlineWork } from 'react-icons/md'
+import { FaProductHunt } from 'react-icons/fa6'
+import { IoIosMailUnread } from 'react-icons/io'
+import { FaHome } from 'react-icons/fa'
 import { GrUserAdmin } from 'react-icons/gr'
 import { Button } from '@/components/ui/button'
 import ShoppingCartPanel from './ShoppingCartPanel'
@@ -66,8 +69,6 @@ export default function Header() {
   //         return response.json()
   //       })
   //       .then((data) => {
-  //         console.log('esto es data user', data)
-
   //         if (data.data.role === 'ADMIN') {
   //           setIsAdmin('ADMIN')
   //         }
@@ -152,9 +153,12 @@ export default function Header() {
           </ul>
         </nav>
 
-        <div className='flex items-center space-x-4'>
+        <div className='flex items-center max-md:pr-5'>
           <ThemeToggle />
-          <button onClick={toggleCart} className='relative h-8 w-8 p-0'>
+          <button
+            onClick={toggleCart}
+            className='relative h-8 w-8 p-0 ml-2 md:ml-3'
+          >
             <MdOutlineShoppingCart className='h-6 w-6' />
             {cartItems.length > 0 && (
               <span className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs'>
@@ -164,8 +168,10 @@ export default function Header() {
           </button>
 
           {/* // !  aqui abajo esta el Login Descomentar para seguir trabajando */}
-          {isSignedIn ? (
-            <div className='min-w-7'>
+          {!isLoaded ? (
+            <span className='loader'></span>
+          ) : isSignedIn ? (
+            <div className='min-w-7 flex justify-center items-center'>
               <SignedIn>
                 <UserButton
                   appearance={{
@@ -178,35 +184,55 @@ export default function Header() {
                   }}
                 >
                   <UserButton.MenuItems>
-                    <UserButton.Link
-                      label='Mis pedidos'
-                      labelIcon={
-                        <ClipboardList className='w-4 pb-2 mr-2 justify-center items-center' />
-                      }
-                      href='/orders'
-                    />
                     {isAdmin && (
                       <UserButton.Link
                         label='Admin Savior'
                         labelIcon={
-                          <GrUserAdmin className='w-6 h-5 pb-1 mr-3 justify-center items-center' />
+                          <GrUserAdmin className='w-full h-5 pb-1 justify-center items-center' />
                         }
                         href='/admin-panel'
                       />
                     )}
+                    <UserButton.Link
+                      label='Home'
+                      labelIcon={
+                        <FaHome className='w-full h-5 pb-1 justify-center items-center' />
+                      }
+                      href='/'
+                    />
+                    <UserButton.Link
+                      label='Todos los Productos'
+                      labelIcon={
+                        <FaProductHunt className='w-full h-5 pb-1 justify-center items-center' />
+                      }
+                      href='/collection'
+                    />
+                    <UserButton.Link
+                      label='Sobre Nosotros'
+                      labelIcon={
+                        <MdOutlineWork className='w-full h-5 pb-1 justify-center items-center' />
+                      }
+                      href='/about'
+                    />
+                    <UserButton.Link
+                      label='Contactanos'
+                      labelIcon={
+                        <IoIosMailUnread className='w-full h-5 pb-1 justify-center items-center' />
+                      }
+                      href='/contact'
+                    />
+                    <UserButton.Link
+                      label='Mis pedidos'
+                      labelIcon={
+                        <ClipboardList className='w-full pb-2 justify-center items-center' />
+                      }
+                      href='/orders'
+                    />
+                    <UserButton.Action label='manageAccount' />
                   </UserButton.MenuItems>
-                  {/* <UserButton.UserProfilePage
-                    label='Custom Page'
-                    url='custom'
-                    labelIcon={<DotIcon />}
-                  >
-                    <div>Hola Mundo</div>
-                  </UserButton.UserProfilePage> */}
                 </UserButton>
               </SignedIn>
             </div>
-          ) : !isLoaded ? (
-            <span className='loader'></span>
           ) : (
             <div className='hidden md:flex space-x-2'>
               <Link href='/sign-in'>
@@ -219,80 +245,84 @@ export default function Header() {
           )}
 
           {/* Mobile Menu Button */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant='ghost' size='icon' className='md:hidden'>
-                <Menu className='h-6 w-6' />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side='right' className='w-[250px] sm:w-[300px]'>
-              <SheetHeader>
-                <SheetTitle className='sr-only'>Menu de navegación</SheetTitle>
-              </SheetHeader>
-              <div className='flex flex-col h-full'>
-                <div className='py-6'>
-                  <nav className='flex flex-col space-y-4'>
-                    <Link
-                      href='/'
-                      className='text-lg hover:text-primary'
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      href='/collection'
-                      className='text-lg hover:text-primary'
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setIsOpen(false)
-                        setTimeout(() => {
-                          window.location.href = '/collection'
-                        }, 100)
-                      }}
-                    >
-                      Productos
-                    </Link>
-                    <Link
-                      href='/about'
-                      className='text-lg hover:text-primary'
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Nosotros
-                    </Link>
-                    <Link
-                      href='/contact'
-                      className='text-lg hover:text-primary'
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Contactanos
-                    </Link>
-                  </nav>
-                </div>
-
-                {!isSignedIn && (
-                  <div className='mt-auto pb-6 flex flex-col space-y-2'>
-                    <Link href='/sign-in'>
-                      <Button
-                        variant='outline'
-                        className='w-full'
+          {!isSignedIn && isLoaded && (
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant='ghost' size='icon' className='md:hidden'>
+                  <Menu className='h-6 w-6' />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side='right' className='w-[250px] sm:w-[300px]'>
+                <SheetHeader>
+                  <SheetTitle className='sr-only'>
+                    Menu de navegación
+                  </SheetTitle>
+                </SheetHeader>
+                <div className='flex flex-col h-full'>
+                  <div className='py-6'>
+                    <nav className='flex flex-col space-y-4'>
+                      <Link
+                        href='/'
+                        className='text-lg hover:text-primary'
                         onClick={() => setIsOpen(false)}
                       >
-                        Login
-                      </Button>
-                    </Link>
-                    <Link href='/sign-up'>
-                      <Button
-                        className='w-full'
+                        Home
+                      </Link>
+                      <Link
+                        href='/collection'
+                        className='text-lg hover:text-primary'
+                        onClick={(e) => {
+                          e.preventDefault()
+                          setIsOpen(false)
+                          setTimeout(() => {
+                            window.location.href = '/collection'
+                          }, 100)
+                        }}
+                      >
+                        Productos
+                      </Link>
+                      <Link
+                        href='/about'
+                        className='text-lg hover:text-primary'
                         onClick={() => setIsOpen(false)}
                       >
-                        Register
-                      </Button>
-                    </Link>
+                        Nosotros
+                      </Link>
+                      <Link
+                        href='/contact'
+                        className='text-lg hover:text-primary'
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Contactanos
+                      </Link>
+                    </nav>
                   </div>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+
+                  {!isSignedIn && (
+                    <div className='mt-auto pb-6 flex flex-col space-y-2'>
+                      <Link href='/sign-in'>
+                        <Button
+                          variant='outline'
+                          className='w-full'
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Login
+                        </Button>
+                      </Link>
+                      <Link href='/sign-up'>
+                        <Button
+                          className='w-full'
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Register
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          )}
         </div>
       </div>
       <ShoppingCartPanel

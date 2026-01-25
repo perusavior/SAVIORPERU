@@ -54,8 +54,6 @@ export default function ShoppingCartPanel({
         (getCartTotal() * 10 - roundToClientFavor) /
         10
       ).toFixed(2)
-      console.log('roundToClientFavor', roundToClientFavor)
-      console.log('subTotal', subtotal)
       return setSubTotal(subtotal)
     }
     setSubTotal(getCartTotal().toFixed(2))
@@ -85,21 +83,22 @@ export default function ShoppingCartPanel({
   if (!isOpen) return null
 
   const validateCupon = async () => {
-    setLoading(true)
-    const response = await fetch(`/api/cupones/codigo/${cuponCode}`)
-    if (!response.ok) {
-      setCuponError('Codigo de cupon invalido')
-      setDescuento(0)
-      setCodigoCupon('')
-      setDiscount('')
+    if (cuponCode) {
+      setLoading(true)
+      const response = await fetch(`/api/cupones/codigo/${cuponCode}`)
+      if (!response.ok) {
+        setCuponError('Codigo de cupon invalido')
+        setDescuento(0)
+        setCodigoCupon('')
+        setDiscount('')
+        setLoading(false)
+      }
+      const data = await response.json()
+      setDiscount(data.codigoCupon)
+      setDescuento(data.descuento)
+      getDiscount(data.codigoCupon, data.descuento)
       setLoading(false)
     }
-    const data = await response.json()
-    console.log('cupon data', data)
-    setDiscount(data.codigoCupon)
-    setDescuento(data.descuento)
-    getDiscount(data.codigoCupon, data.descuento)
-    setLoading(false)
   }
 
   return (
@@ -107,23 +106,21 @@ export default function ShoppingCartPanel({
       {/* Backdrop */}
       <div
         className='fixed inset-0 bg-black bg-opacity-50 z-auto'
-        onClick={() => {
-          console.log('cuponError.length', cuponError.length)
-
-          if (cuponError.length) {
-            setCuponError('')
-            setDescuento(0)
-            setCodigoCupon('')
-            setDiscount('')
-            setLoading(false)
-          }
-          setTimeout(() => {
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) {
+            if (cuponError.length) {
+              setCuponError('')
+              setDescuento(0)
+              setCodigoCupon('')
+              setDiscount('')
+              setLoading(false)
+            }
             onClose()
-          }, 100)
+          }
         }}
       >
         {/* Cart Panel */}
-        <div className='cartPanel' onClick={(e) => e.stopPropagation()}>
+        <div className='cartPanel'>
           <div className='flex justify-between items-center mb-6'>
             <h2 className='text-xl font-semibold text-gray-800'>Tu Carrito</h2>
             <button
@@ -183,7 +180,7 @@ export default function ShoppingCartPanel({
               </ul>
               <div className='border-t border-gray-200 pt-4 mb-6'>
                 <>
-                  <div className='flex mb-2 justify-center'>
+                  <div className='flex justify-center'>
                     <span className='text-gray-600'>Cupon:</span>
                     <div className='relative bg-white dark:bg-gray-600 w-full rounded-md ml-2'>
                       <input
@@ -210,10 +207,17 @@ export default function ShoppingCartPanel({
                       </button>
                     </div>
                   </div>
+                  {cuponError.length > 0 && (
+                    <span className='text-red-500 text-sm right-0 flex w-full justify-end'>
+                      Cupon invalido
+                    </span>
+                  )}
                   <div
-                    className={`flex justify-between text-sm ${
-                      discount === codigoCupon
+                    className={`flex justify-between text-sm mt-1 ${
+                      cuponError.length > 0
                         ? 'text-red-400'
+                        : descuento > 0
+                        ? 'text-green-600'
                         : 'text-gray-600'
                     }`}
                   >
@@ -262,9 +266,9 @@ export default function ShoppingCartPanel({
             subTotal={subTotal}
             setShowCardClientName={setShowCardClientName}
             itemsProducts={itemsProducts}
-            disctount={discount}
+            discountCode={discount}
             onClose={onClose}
-            descuento={descuento}
+            discountPercentage={descuento}
           />
         )}
       </div>

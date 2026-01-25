@@ -12,6 +12,7 @@ interface Product {
   image2?: string
   size?: string
   estado?: string
+  stock: number
 }
 
 // Array para skeletons
@@ -23,11 +24,6 @@ export default function BestSellers() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log(
-        '🔄 [CLIENT] Iniciando fetch de productos -',
-        new Date().toLocaleTimeString()
-      )
-
       try {
         setLoading(true)
 
@@ -38,11 +34,6 @@ export default function BestSellers() {
         }
 
         const collectionData = await response.json()
-
-        console.log(
-          '📊 [CLIENT] Productos recibidos:',
-          collectionData.data.colecciones.length
-        )
 
         setData(collectionData.data.colecciones)
       } catch (error) {
@@ -72,7 +63,8 @@ export default function BestSellers() {
                 id: item, // Usar item como ID único
                 image: '/CargandoImagen.png',
                 name: 'Cargando...',
-                price: 0
+                price: 0,
+                stock: 0
               }}
               from='bestSellers'
             />

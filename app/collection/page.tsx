@@ -71,6 +71,10 @@ export default function Collection() {
     return () => window.removeEventListener('scroll', toggleVisibility)
   }, [page, filter, sort])
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [page])
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -110,7 +114,7 @@ export default function Collection() {
             <SelectValue placeholder='Ver todos' />
           </SelectTrigger>
           <SelectContent>
-            {categories.length >= 1
+            {categories && categories.length >= 1
               ? categories.map((ele) => {
                   return (
                     <SelectItem key={ele.name} value={ele.name}>
@@ -164,15 +168,15 @@ export default function Collection() {
       )}
 
       {/* Botón scroll to top */}
-      {isVisible && (
-        <button
-          onClick={scrollToTop}
-          className='buttonUp'
-          aria-label='Volver arriba'
-        >
-          <RiArrowUpDoubleLine className='w-10 h-10' />
-        </button>
-      )}
+      {/* {isVisible && ( */}
+      <button
+        onClick={scrollToTop}
+        className='buttonUp'
+        aria-label='Volver arriba'
+      >
+        <RiArrowUpDoubleLine className='w-10 h-10' />
+      </button>
+      {/* )} */}
     </div>
   )
 }

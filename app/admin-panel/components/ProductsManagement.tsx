@@ -27,6 +27,7 @@ import {
 import { GoSortAsc, GoSortDesc } from 'react-icons/go'
 import { toast } from 'sonner'
 import KpiCard from './KpiCard'
+// import KpiCard from './KpiCard'
 
 // Interfaces
 interface Producto {
@@ -260,11 +261,11 @@ const ProductsManagement: React.FC = () => {
 
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('upload_preset', 'prueba_preset')
+    formData.append('upload_preset', 'saviorperu')
     formData.append('folder', 'ecommerce-products')
 
     const response = await fetch(
-      'https://api.cloudinary.com/v1_1/dniekrmqb/image/upload',
+      'https://api.cloudinary.com/v1_1/saviorperu/image/upload',
       {
         method: 'POST',
         body: formData
@@ -371,8 +372,6 @@ const ProductsManagement: React.FC = () => {
       toast.error('Nombre, categoría e imagen principal son requeridos')
       return
     }
-
-    console.log('formData', formData)
 
     try {
       const formDataToSend = {
@@ -559,8 +558,6 @@ const ProductsManagement: React.FC = () => {
       toast.error('Error al actualizar el producto')
     }
   }
-
-  console.log('formData', formData)
 
   return (
     <>
@@ -1042,8 +1039,6 @@ const ProductsManagement: React.FC = () => {
                           <>
                             <option value='CATEGORIES'>Seleccionar</option>
                             {kpiData.categoreis.map((ele, index) => {
-                              console.log(ele)
-
                               return (
                                 <option key={index} value={ele.name}>
                                   {ele.name.length
@@ -1425,8 +1420,6 @@ const ProductsManagement: React.FC = () => {
                           <>
                             <option value='CATEGORIES'>Seleccionar</option>
                             {kpiData.categoreis.map((ele, index) => {
-                              console.log(ele)
-
                               return (
                                 <option key={index} value={ele.name}>
                                   {ele.name.length

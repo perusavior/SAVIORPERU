@@ -7,7 +7,7 @@ import { useState } from 'react'
 import styles from './product-card.module.css'
 import Link from 'next/link'
 import { MdOutlineShoppingCart } from 'react-icons/md'
-import { FiMinusCircle, FiPlusCircle } from 'react-icons/fi'
+// import { FiMinusCircle, FiPlusCircle } from 'react-icons/fi'
 import { FiCheckCircle } from 'react-icons/fi'
 import { ImSpinner2 } from 'react-icons/im'
 
@@ -19,6 +19,7 @@ interface Product {
   image2?: string
   size?: string
   estado?: string
+  stock: number
 }
 
 export default function ProductCard({
@@ -150,7 +151,7 @@ export default function ProductCard({
           } flex items-center justify-center gap-2 text-white bg-black hover:bg-gray-700`}
           onClick={handleAddToCart}
           disabled={
-            product.estado === 'NO DISPONIBLE'
+            product.estado === 'NO DISPONIBLE' || product.stock == 0
               ? true
               : buttonState === 'loading' ||
                 buttonState === 'success' ||
@@ -165,8 +166,8 @@ export default function ProductCard({
           )}
           {buttonState === 'idle' && (
             <>
-              {product.estado === 'NO DISPONIBLE' ? (
-                product.estado
+              {product.estado === 'NO DISPONIBLE' || product.stock === 0 ? (
+                'NO DISPONIBLE'
               ) : (
                 <>
                   Añadir al carrito <MdOutlineShoppingCart />

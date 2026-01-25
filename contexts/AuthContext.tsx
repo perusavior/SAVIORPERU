@@ -60,8 +60,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         const data = await response.json()
 
-        console.log('User data from API:', data)
-
         const userRole = data.data?.role || null
 
         setUserData({

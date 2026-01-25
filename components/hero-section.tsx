@@ -87,7 +87,7 @@ const HeroSection = () => {
   // Versión final CORREGIDA
   return (
     <section className={styles.heroSection}>
-      <div className='w-full'>
+      <div className='w-full flex-1'>
         <img
           src={settings.imagenIzquierda}
           alt='Imagen izquierda'
@@ -98,7 +98,7 @@ const HeroSection = () => {
           }}
         />
       </div>
-      <div className='w-full'>
+      <div className='w-full flex-1'>
         <img
           src={settings.imagenDerecha}
           alt='Imagen derecha'

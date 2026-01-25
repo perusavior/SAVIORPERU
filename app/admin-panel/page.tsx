@@ -20,8 +20,8 @@ const paths = [
   { name: 'Órdenes', path: 'orders', icon: MdShoppingBag },
   { name: 'Productos', path: 'products', icon: MdInventory2 },
   { name: 'Usuarios', path: 'users', icon: MdGroups2 },
-  { name: 'Configuracion', path: 'settings', icon: MdSettings },
-  { name: 'Cupones', path: 'coupon', icon: BiSolidCoupon }
+  { name: 'Cupones', path: 'coupon', icon: BiSolidCoupon },
+  { name: 'Configuracion', path: 'settings', icon: MdSettings }
 ]
 
 const AdminPanel = () => {

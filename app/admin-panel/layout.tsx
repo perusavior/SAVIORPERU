@@ -10,7 +10,6 @@ export default async function AdminLayout({
 }) {
   // 1. Obtener usuario actual DESDE EL SERVIDOR
   const user = await currentUser()
-  console.log('user?.id', user?.id)
 
   // 2. Si no está autenticado, redirigir inmediatamente
   if (!user) {

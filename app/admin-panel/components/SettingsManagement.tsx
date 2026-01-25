@@ -191,8 +191,6 @@ const SettingsManagement: React.FC = () => {
   }
 
   const handleSettingChange = (key: string, value: string) => {
-    console.log(key, value)
-
     setSettingsForm((prev) => ({ ...prev, [key]: value }))
     if (settingsErrors[key]) {
       setSettingsErrors((prev) => ({ ...prev, [key]: '' }))
@@ -487,8 +485,6 @@ const SettingsManagement: React.FC = () => {
                           <ImageManager
                             mainImage={settingsForm[key] || ''}
                             onMainImageChange={(url) => {
-                              console.log('488', settingsForm[key], url)
-
                               handleSettingChange(key, url)
                             }}
                             imageFrom={'systemImages'}

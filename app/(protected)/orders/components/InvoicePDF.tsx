@@ -116,8 +116,15 @@ export interface InvoicePDFProps {
 export function InvoicePDF({ orderData }: InvoicePDFProps) {
   const subtotal = parseFloat(orderData.totalPrice) || 0
   const delivery = parseFloat(orderData.deliveryCost || '0')
+  const calculateDiscount = orderData.discount
+    ? (subtotal * parseFloat(orderData.discount)) / 100
+    : 0
+  const roundedDiscount = Math.ceil(calculateDiscount * 10) / 10
   const discount = parseFloat(orderData.discount || '0')
-  const total = (subtotal + delivery - discount).toFixed(2)
+  const total = (
+    (subtotal * 100 + delivery * 100 - roundedDiscount * 100) /
+    100
+  ).toFixed(2)
 
   return (
     <Document>
@@ -207,7 +214,7 @@ export function InvoicePDF({ orderData }: InvoicePDFProps) {
           {discount > 0 && (
             <View style={styles.totalRow}>
               <Text>Descuento:</Text>
-              <Text>-S/. {discount.toFixed(2)}</Text>
+              <Text>-%. {discount.toFixed(2)}</Text>
             </View>
           )}
           <View style={[styles.totalRow, styles.grandTotal]}>

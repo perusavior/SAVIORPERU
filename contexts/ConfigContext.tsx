@@ -167,7 +167,6 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
 
         // 3. Si 304 Not Modified, mantener cache
         if (response.status === 304) {
-          console.log('Config unchanged, using cache')
           setIsLoading(false)
           return
         }
@@ -199,8 +198,6 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
         const hasChanged = !currentEtag || currentEtag !== etag
 
         if (hasChanged) {
-          console.log('Config changed, updating cache')
-
           // Guardar en cache
           saveToCache(result.data, etag)
 

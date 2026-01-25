@@ -172,8 +172,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
   }
 
-  console.log('formData =>', formData)
-
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm'>
       <div className='w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-2xl bg-white shadow-2xl flex flex-col animate-in fade-in zoom-in duration-200 dark:bg-gray-800'>

@@ -15,8 +15,6 @@ const updateOrderSchema = z.object({
 })
 
 // GET: Obtener detalle de una orden
-// 1. GET: Obtener detalle
-// 1. GET: Obtener detalle
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> } // Cambiado a Promise
@@ -48,13 +46,15 @@ export async function GET(
   }
 }
 
-// 2. PUT: Actualizar orden
+const CONSUME_STOCK_STATUSES = ['Pagado', 'Enviado', 'Entregado']
+const RELEASE_STOCK_PREV_STATUSES = ['Pagado', 'Enviado', 'Entregado']
+
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> } // Cambiado a Promise
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: idParam } = await params // Esperamos los params
+    const { id: idParam } = await params
     const id = parseInt(idParam)
 
     if (isNaN(id))
@@ -63,18 +63,101 @@ export async function PUT(
     const body = await req.json()
     const validatedData = updateOrderSchema.parse(body)
 
-    const updatedOrder = await prisma.orders.update({
+    // Si no se actualiza el estado, no hay gestión de stock
+    if (!validatedData.status) {
+      const updatedOrder = await prisma.orders.update({
+        where: { id },
+        data: validatedData,
+        include: { orderItems: { include: { producto: true } } }
+      })
+      return NextResponse.json({ message: 'Actualizado', data: updatedOrder })
+    }
+
+    const currentOrder = await prisma.orders.findUnique({
       where: { id },
-      data: validatedData,
       include: { orderItems: { include: { producto: true } } }
+    })
+
+    if (!currentOrder) {
+      return NextResponse.json(
+        { message: 'Orden no encontrada' },
+        { status: 404 }
+      )
+    }
+
+    const oldStatus = currentOrder.status
+    const newStatus = validatedData.status
+
+    const shouldReduceStock =
+      oldStatus === 'Pendiente' && CONSUME_STOCK_STATUSES.includes(newStatus)
+
+    const shouldIncreaseStock =
+      RELEASE_STOCK_PREV_STATUSES.includes(oldStatus) &&
+      (newStatus === 'Cancelado' || newStatus === 'Pendiente')
+
+    if (!shouldReduceStock && !shouldIncreaseStock) {
+      const updatedOrder = await prisma.orders.update({
+        where: { id },
+        data: validatedData,
+        include: { orderItems: { include: { producto: true } } }
+      })
+      return NextResponse.json({ message: 'Actualizado', data: updatedOrder })
+    }
+
+    // ✅ Validación adicional: si vamos a reducir stock, verificar disponibilidad
+    if (shouldReduceStock) {
+      for (const item of currentOrder.orderItems) {
+        const product = await prisma.productos.findUnique({
+          where: { id: item.productoId },
+          select: { name: true, stock: true }
+        })
+
+        if (!product) {
+          return NextResponse.json(
+            { message: `Producto con ID ${item.productoId} no encontrado` },
+            { status: 400 }
+          )
+        }
+
+        if (product.stock < item.quantity) {
+          return NextResponse.json(
+            {
+              message: `Stock insuficiente para el producto "${product.name}". Disponible: ${product.stock}, solicitado: ${item.quantity}`
+            },
+            { status: 400 }
+          )
+        }
+      }
+    }
+
+    // Transacción atómica
+    const updatedOrder = await prisma.$transaction(async (tx) => {
+      const updated = await tx.orders.update({
+        where: { id },
+        data: validatedData,
+        include: { orderItems: { include: { producto: true } } }
+      })
+
+      for (const item of updated.orderItems) {
+        const adjustment = shouldReduceStock ? -item.quantity : item.quantity
+
+        await tx.productos.update({
+          where: { id: item.productoId },
+          data: { stock: { increment: adjustment } }
+        })
+      }
+
+      return updated
     })
 
     return NextResponse.json({ message: 'Actualizado', data: updatedOrder })
   } catch (error) {
     if (error instanceof z.ZodError)
       return NextResponse.json({ errors: error.errors }, { status: 400 })
+
+    console.error('Error en PUT /orders/:id:', error)
     return NextResponse.json(
-      { message: 'Error al actualizar' },
+      { message: 'Error al actualizar la orden' },
       { status: 500 }
     )
   }
