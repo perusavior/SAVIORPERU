@@ -40,8 +40,8 @@ const ImageManager: React.FC<ImageManagerProps> = ({
   const [uploadingToCloudinary, setUploadingToCloudinary] = useState(false)
   const [showCloudinaryGallery, setShowCloudinaryGallery] = useState(false)
 
-  const cloudinaryName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || ""
-  const preset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ""
+  const cloudinaryName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dnu4gmw8o"
+  const preset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "savior_preset"
 
   // Subir imagen a Cloudinary
   const uploadImageToCloudinary = async (file: File): Promise<string> => {
