@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 // Configuración de Cloudinary
 cloudinary.config({
-  cloud_name: 'dniekrmqb',
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
