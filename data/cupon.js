@@ -1,3 +1,3 @@
 export const codigoCupon = 'qwer'
 
-export const mostrarCupon = false
+export const mostrarCupon = true

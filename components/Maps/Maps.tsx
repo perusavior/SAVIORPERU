@@ -20,11 +20,13 @@ interface RouteInfo {
 interface InteractiveMapProps {
   setDeliveryCost: (cost: number) => void
   setGetlocation: (position: Position) => void
+  locationToSend: Position | null
 }
 
 export default function InteractiveMap({
   setDeliveryCost,
-  setGetlocation
+  setGetlocation,
+  locationToSend
 }: InteractiveMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
@@ -57,7 +59,6 @@ export default function InteractiveMap({
         }
         document.head.appendChild(script)
       } catch (error) {
-        console.log('Error loading Leaflet:', error)
         setError('Error cargando el mapa')
       }
     }
@@ -70,7 +71,6 @@ export default function InteractiveMap({
       let verification
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log(position.coords.latitude, position.coords.longitude)
           setUserPosition({
             lat: position.coords.latitude,
             lng: position.coords.longitude
@@ -82,7 +82,6 @@ export default function InteractiveMap({
           verification = true
         },
         (error) => {
-          console.log('Error obteniendo ubicación:', error)
           setError(
             'No se pudo obtener la ubicación. Usando ubicación por defecto.'
           )
@@ -109,6 +108,61 @@ export default function InteractiveMap({
   useEffect(() => {
     getLocationDevice()
   }, [])
+
+  useEffect(() => {
+    // Si la prop tiene coordenadas válidas
+    if (
+      mapInstanceRef.current &&
+      locationToSend &&
+      (locationToSend.lat !== 0 || locationToSend.lng !== 0)
+    ) {
+      const { map, endIcon } = mapInstanceRef.current
+      const L = (window as any).L
+
+      // Prevenir bucle si la prop ya es igual al estado interno
+      if (
+        destinationPosition &&
+        destinationPosition.lat === locationToSend.lat &&
+        destinationPosition.lng === locationToSend.lng
+      ) {
+        return // La ubicación ya está establecida
+      }
+
+      // A) Actualizar el estado interno, disparando el useEffect de cálculo de ruta
+      setDestinationPosition(locationToSend)
+
+      // B) Remover marcador de destino anterior si existe
+      if (mapInstanceRef.current.destinationMarker) {
+        map.removeLayer(mapInstanceRef.current.destinationMarker)
+      }
+
+      // C) Agregar nuevo marcador de destino (visualización inmediata)
+      const destinationMarker = L.marker(
+        [locationToSend.lat, locationToSend.lng],
+        { icon: endIcon }
+      )
+        .addTo(map)
+        .bindPopup(
+          '<div style="text-align: center;"><strong>Destino</strong><br><small>Punto de llegada</small></div>'
+        )
+        .openPopup()
+
+      mapInstanceRef.current.destinationMarker = destinationMarker
+
+      // D) Centrar el mapa en el pin
+      map.setView([locationToSend.lat, locationToSend.lng], 13)
+    } else if (mapInstanceRef.current && destinationPosition) {
+      // Si la prop está vacía/reseteada, limpiar el pin visual
+      if (mapInstanceRef.current.destinationMarker) {
+        mapInstanceRef.current.map.removeLayer(
+          mapInstanceRef.current.destinationMarker
+        )
+        mapInstanceRef.current.destinationMarker = null
+        setDestinationPosition(null)
+        setDeliveryCost(0)
+      }
+    }
+  }, [mapInstanceRef.current, locationToSend, destinationPosition])
 
   // Inicializar mapa cuando Leaflet esté cargado y tengamos la posición del usuario
   useEffect(() => {
@@ -167,12 +221,44 @@ export default function InteractiveMap({
       // Manejar clicks en el mapa
       map.on('click', (e: any) => {
         const { lat, lng } = e.latlng
-        console.log(lat, lng)
-        setDestinationPosition({ lat, lng })
+        // setDestinationPosition({ lat, lng })
         setGetlocation({ lat, lng })
       })
 
-      mapInstanceRef.current = { map /* userMarker */, startIcon, endIcon }
+      let initialDestinationMarker = null
+      let initialViewPosition = [userPosition.lat, userPosition.lng]
+
+      if (
+        locationToSend &&
+        (locationToSend.lat !== 0 || locationToSend.lng !== 0)
+      ) {
+        // Inicializar el estado interno de destino con la ubicación del localStorage
+        setDestinationPosition(locationToSend)
+
+        // Crear el marcador
+        initialDestinationMarker = L.marker(
+          [locationToSend.lat, locationToSend.lng],
+          { icon: endIcon }
+        )
+          .addTo(map)
+          .bindPopup(
+            '<div style="text-align: center;"><strong>Destino</strong><br><small>Punto de llegada</small></div>'
+          )
+          .openPopup()
+
+        // Ajustar el centro inicial del mapa para incluir el pin de destino
+        initialViewPosition = [locationToSend.lat, locationToSend.lng]
+        map.setView(initialViewPosition, 13)
+      }
+
+      // 3. Guardar instancias en la ref
+      mapInstanceRef.current = {
+        map,
+        startIcon,
+        endIcon,
+        // Guardar el marcador inicial
+        destinationMarker: initialDestinationMarker
+      }
     }
   }, [mapLoaded, userPosition])
 
@@ -261,7 +347,9 @@ export default function InteractiveMap({
       )
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        alert(
+          'No se pudo calcular la ruta desde tu ubicación actual. Verifica que estés en una zona con acceso a calles o intenta mover el marcador a una vía cercana.'
+        )
       }
 
       const data = await response.json()

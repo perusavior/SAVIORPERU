@@ -25,7 +25,7 @@ export const products = [
     id: 3,
     name: 'Polo Jade Forgiven',
     category: 'polos',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 45.0,
     image:
@@ -36,7 +36,7 @@ export const products = [
     id: 4,
     name: 'Polo Amarillo Hope',
     category: 'polos',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 45.0,
     image:
@@ -47,7 +47,7 @@ export const products = [
     id: 5,
     name: "Polo Celeste God's Club",
     category: 'polos',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 45.0,
     image:
@@ -58,7 +58,7 @@ export const products = [
     id: 6,
     name: 'Polo Verde Peace',
     category: 'polos',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 45.0,
     image:
@@ -69,7 +69,7 @@ export const products = [
     id: 9,
     name: 'Gorro Verde Faith',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235208/Gorro_Verde_Faith_iz5nbj.webp',
@@ -79,7 +79,7 @@ export const products = [
     id: 10,
     name: 'Gorro Beige Faith',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235205/Gorro_Beige_Faith_pxfsp0.webp',
@@ -89,7 +89,7 @@ export const products = [
     id: 11,
     name: 'Gorro Negro Faith',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235208/Gorro_Negro_Faith_arid6q.webp',
@@ -99,7 +99,7 @@ export const products = [
     id: 12,
     name: 'Gorro Azul Blessed',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235204/Gorro_Azul_Blessed_ljhzkx.webp',
@@ -109,7 +109,7 @@ export const products = [
     id: 13,
     name: 'Gorro Blanco Blessed',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235205/Gorro_Blanco_Blessed_vf7udu.webp',
@@ -119,7 +119,7 @@ export const products = [
     id: 14,
     name: 'Gorro Negro Choosen',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235207/Gorro_Negro_Choosen_ychlsz.webp',
@@ -129,7 +129,7 @@ export const products = [
     id: 15,
     name: 'Gorro Blanco Choosen',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235206/Gorro_Blanco_Choosen_xmxwrz.webp',
@@ -139,7 +139,7 @@ export const products = [
     id: 16,
     name: 'Gorro Marron Choosen',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235206/Gorro_Marron_Choosen_zklfe8.webp',
@@ -149,7 +149,7 @@ export const products = [
     id: 17,
     name: 'Gorro Celeste Choosen',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235206/Gorro_Celeste_Choosen_uzjttp.webp',
@@ -159,7 +159,7 @@ export const products = [
     id: 18,
     name: 'Gorro Negro Savior',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/c_crop,w_1500,h_2100/v1767395226/Photoroom_20260101_171526_utdgt9.webp',
@@ -169,7 +169,7 @@ export const products = [
     id: 19,
     name: 'Gorro Blanco Savior',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/c_crop,w_1500,h_2100/v1767395225/Photoroom_20260101_171755_whakxj.webp',
@@ -179,7 +179,7 @@ export const products = [
     id: 20,
     name: 'Gorro Rojo Savior',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/c_crop,w_1500,h_2100/v1767395225/Photoroom_20260101_170947_n6f0ce.webp',
@@ -199,7 +199,7 @@ export const products = [
     id: 26,
     name: 'Bucket Azul',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235203/Bucket_Azul_l8b18p.webp',
@@ -209,7 +209,7 @@ export const products = [
     id: 27,
     name: 'Bucket Negro',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235203/Bucket_Negro_qyhbcg.webp',
@@ -219,7 +219,7 @@ export const products = [
     id: 28,
     name: 'Bucket Rosado',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235204/Bucket_Rosado_fw14ia.webp',
@@ -229,7 +229,7 @@ export const products = [
     id: 29,
     name: 'Bucket Verde',
     category: 'gorros',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     price: 42.5,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235203/Bucket_Verde_Choosen_qnxijc.webp',
@@ -261,7 +261,7 @@ export const products = [
     id: 25,
     name: 'Hoodie Negro Faith',
     category: 'casacas',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M',
     price: 119.0,
     image:
@@ -272,7 +272,7 @@ export const products = [
     id: 30,
     name: 'Polo Blanco Basico',
     category: 'polos',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'M - L',
     price: 38.0,
     image:
@@ -283,7 +283,7 @@ export const products = [
     id: 31,
     name: 'Polo Negro Basico',
     category: 'polos',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 38.0,
     image:
@@ -294,7 +294,7 @@ export const products = [
     id: 32,
     name: 'Jogger Melange',
     category: 'Pantalones',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 65.0,
     image:
@@ -305,7 +305,7 @@ export const products = [
     id: 33,
     name: 'Jogger Negro',
     category: 'Pantalones',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 65.0,
     image:
@@ -316,7 +316,7 @@ export const products = [
     id: 34,
     name: 'Polera Negra',
     category: 'casacas',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 69.0,
     image:

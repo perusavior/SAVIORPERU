@@ -5,7 +5,7 @@ try {
 } catch (e) {
   try {
     // fallback to CJS import
-    userConfig = await import("./v0-user-next.config");
+    userConfig = await import('./v0-user-next.config')
   } catch (innerError) {
     // ignore error
   }
@@ -14,19 +14,19 @@ try {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true
   },
   images: {
-    unoptimized: true,
+    unoptimized: true
   },
   experimental: {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
-  },
+    parallelServerCompiles: true
+  }
 }
 
 if (userConfig) {
@@ -40,7 +40,7 @@ if (userConfig) {
     ) {
       nextConfig[key] = {
         ...nextConfig[key],
-        ...config[key],
+        ...config[key]
       }
     } else {
       nextConfig[key] = config[key]

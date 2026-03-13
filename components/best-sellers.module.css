@@ -8,6 +8,10 @@
   @apply gap-2 grid grid-cols-4;
 }
 
+.cardContainerCharge {
+  @apply gap-2 grid grid-cols-4 animate-pulse;
+}
+
 .h2 {
   @apply text-3xl font-bold mb-4;
 }

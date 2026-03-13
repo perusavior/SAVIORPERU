@@ -3,7 +3,7 @@ export const featuredProducts = [
     id: 22,
     name: 'Casaca Negra Vintage',
     category: 'casacas',
-    Estado: 'SOLO DISPONIBLE',
+    estado: 'SOLO DISPONIBLE',
     size: 'M - L',
     price: 95.0,
     image:
@@ -15,7 +15,7 @@ export const featuredProducts = [
     id: 23,
     name: 'Gorro Negro Choosen',
     category: 'pantalones',
-    Estado: 'SOLO DISPONIBLE',
+    estado: 'SOLO DISPONIBLE',
     price: 39.9,
     image:
       'https://res.cloudinary.com/dkw7q1u6z/image/upload/v1746235207/Gorro_Negro_Choosen_ychlsz.webp',
@@ -26,7 +26,7 @@ export const featuredProducts = [
     id: 1,
     name: 'Polo Blanco Fire',
     category: 'polos',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M - L',
     price: 45.0,
     image:
@@ -38,7 +38,7 @@ export const featuredProducts = [
     id: 25,
     name: 'Hoodie Negro Faith',
     category: 'casacas',
-    Estado: 'DISPONIBLE',
+    estado: 'DISPONIBLE',
     size: 'S - M',
     price: 119.0,
     image:

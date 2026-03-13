@@ -7,7 +7,7 @@ import { useState } from 'react'
 import styles from './product-card.module.css'
 import Link from 'next/link'
 import { MdOutlineShoppingCart } from 'react-icons/md'
-import { FiMinusCircle, FiPlusCircle } from 'react-icons/fi'
+// import { FiMinusCircle, FiPlusCircle } from 'react-icons/fi'
 import { FiCheckCircle } from 'react-icons/fi'
 import { ImSpinner2 } from 'react-icons/im'
 
@@ -18,6 +18,8 @@ interface Product {
   image: string
   image2?: string
   size?: string
+  estado?: string
+  stock: number
 }
 
 export default function ProductCard({
@@ -55,7 +57,7 @@ export default function ProductCard({
 
   if (from === 'bestSellers') {
     return (
-      <div className='bg-white overflow-hidden w-full'>
+      <div className='bg-white overflow-hidden w-full dark:bg-[#0a0a0a]'>
         <Link href={`/collection?category=${product.name.toLowerCase()}`}>
           <div className={styles.fromBestSellers}>
             <Image
@@ -69,8 +71,14 @@ export default function ProductCard({
               onMouseLeave={() => setImage(product.image)}
             />
           </div>
-          <div className='px-0 pt-4 pb-0 flex mb-2'>
-            <h3 className={styles.fromBestSellersh3}>{product.name}</h3>
+          <div className='px-2 pt-4 pb-0 flex mb-2'>
+            <h3
+              className={
+                'text-sm text-[#787671] border-b border-[#787671] flex dark:text-white'
+              }
+            >
+              Ver {product.name}
+            </h3>
           </div>
         </Link>
       </div>
@@ -83,9 +91,7 @@ export default function ProductCard({
         className={`relative ${
           from === 'featured'
             ? styles.fromFeatured
-            : from === 'bestSellers'
-            ? styles.fromBestSellers
-            : 'lg:h-64 max-[400px]:h-[300px] max-[460px]:h-[400px] h-[450px] 2xl:h-[450px]'
+            : 'lg:h-80 max-[400px]:h-[400px] max-[460px]:h-[400px] h-[450px] 2xl:h-[450px]'
         }`}
       >
         <Image
@@ -101,77 +107,55 @@ export default function ProductCard({
       </div>
       <div
         className={`${
-          from === 'bestSellers' || from === 'featured'
-            ? 'px-2 pt-2 pb-0'
-            : 'p-4'
+          from === 'featured' ? 'px-2 pt-2 pb-0' : 'pt-1 pb-2 px-2'
         }`}
       >
         <h3
           className={`${
-            from === 'featured' || from === 'bestSellers'
-              ? 'text-sm'
-              : 'text-lg'
-          } font-medium mb-1 text-[#31302e]`}
+            from === 'featured' ? 'text-sm' : 'text-lg'
+          } font-semibold text-sm mb-0 text-[#31302e]`}
         >
           {product.name}
         </h3>
-        {from !== 'bestSellers' && (
-          <div className='text-gray-600 mb-3 w-full'>
-            <p>S/ {product.price.toFixed(2)}</p>
+        {
+          <div className='text-gray-600 mb-1 w-full flex justify-between'>
+            <p className='text-sm'>S/ {Number(product.price).toFixed(2)}</p>
 
-            <div className='flex justify-between mt-1'>
-              <div className='flex gap-2'>
-                <button
-                  className='hover:text-gray-950'
-                  onClick={() =>
-                    setQuantity((prev) => (prev > 1 ? prev - 1 : prev))
-                  }
-                >
-                  <FiMinusCircle className='h-4 w-4' />
-                </button>
-                <span>{quantity}</span>
-                <button
-                  className='hover:text-gray-950'
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                >
-                  <FiPlusCircle className='h-4 w-4' />
-                </button>
-              </div>
+            <div className='flex justify-between mt-0'>
               <form className='flex gap-2'>
-                {product.size?.split(' - ').map((ele, index) => (
-                  <div
-                    className='radio-container gap-[2px] flex items-center'
-                    key={index}
-                  >
-                    <input
-                      type='radio'
-                      id={ele}
-                      value={ele}
-                      name='size'
-                      onChange={() => setSelectedSize(ele)}
-                      checked={selectedSize === ele}
-                    />
-                    <label htmlFor={ele} className='m-0'>
-                      {ele}
-                    </label>
-                  </div>
-                ))}
+                {product.size &&
+                  product.size?.split(' - ').map((ele, index) => (
+                    <div
+                      className='radio-container gap-[2px] flex items-center'
+                      key={index}
+                    >
+                      <input
+                        type='radio'
+                        id={ele}
+                        value={ele}
+                        name='size'
+                        onChange={() => setSelectedSize(ele)}
+                        checked={selectedSize === ele}
+                        className="appearance-none w-3 h-3 border-2 border-gray-400 rounded-full checked:border-4 checked:border-blue-800 focus:outline-none transition duration-200 relative after:content-[''] after:absolute after:hidden checked:after:block after:w-0 after:h-0 after:bg-blue-800 after:rounded-full after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 cursor-pointer"
+                      />
+                      <label className='m-0 text-sm'>{ele}</label>
+                    </div>
+                  ))}
               </form>
             </div>
           </div>
-        )}
+        }
         <Button
-          className='w-full mb-2 flex items-center justify-center gap-2'
+          className={`w-full ${
+            from === 'featured' ? 'mb-2' : 'mb-0'
+          } flex items-center justify-center gap-2 text-white bg-black hover:bg-gray-700`}
           onClick={handleAddToCart}
           disabled={
-            buttonState === 'loading' ||
-            buttonState === 'success' ||
-            (selectedSize
-              ? false
-              : product.name.includes('Gorro') ||
-                product.name.includes('Bucket')
-              ? false
-              : true)
+            product.estado === 'NO DISPONIBLE' || product.stock == 0
+              ? true
+              : buttonState === 'loading' ||
+                buttonState === 'success' ||
+                (selectedSize ? false : !product.size ? false : true)
           }
         >
           {buttonState === 'loading' && (
@@ -182,7 +166,13 @@ export default function ProductCard({
           )}
           {buttonState === 'idle' && (
             <>
-              Añadir al carrito <MdOutlineShoppingCart />
+              {product.estado === 'NO DISPONIBLE' || product.stock === 0 ? (
+                'NO DISPONIBLE'
+              ) : (
+                <>
+                  Añadir al carrito <MdOutlineShoppingCart />
+                </>
+              )}
             </>
           )}
         </Button>

@@ -2,14 +2,12 @@
 
 import { useCart } from '@/contexts/CartContext'
 import { Button } from '@/components/ui/button'
-import { X, CircleX } from 'lucide-react'
+import { X } from 'lucide-react'
 import './ShoppingCartPanel.css'
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { codigoCupon, mostrarCupon } from '../data/cupon'
-import dynamic from 'next/dynamic'
+// import { codigoCupon, mostrarCupon } from '../data/cupon'
+import { LuLoaderCircle } from 'react-icons/lu'
 
-import InteractiveMap from './Maps/Maps'
 import { LatLng } from 'leaflet'
 import FormToSend from './formToSend'
 
@@ -34,13 +32,32 @@ export default function ShoppingCartPanel({
   const { cartItems, removeFromCart, clearCart, getCartTotal } = useCart()
   const [itemsProducts, setItemsProducts] = useState<ProsItemsProduct[]>([])
   const [showCardClientName, setShowCardClientName] = useState(false)
-  const [clientName, setClientName] = useState('')
-  const [address, setAddress] = useState('')
-  const [disctount, setDiscount] = useState('')
-  const [location, setLocation] = useState<LatLng | null>(null)
-  const [locationToSend, setLocationToSend] = useState('')
-  const [deliveryCost, setDeliveryCost] = useState(0)
-  const [agencia, setAgencia] = useState('')
+  const [discount, setDiscount] = useState('')
+  // const [location, setLocation] = useState<LatLng | null>(null)
+  const [cuponCode, setCuponCode] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [codigoCupon, setCodigoCupon] = useState('')
+  const [descuento, setDescuento] = useState(0)
+  const [cuponError, setCuponError] = useState('')
+  const [subTotal, setSubTotal] = useState('')
+
+  const getDiscount = (discount?: string, descuento?: number) => {
+    if (discount && descuento) {
+      // convertimos el total a entero sin decimal multiplicando por 10
+      // luego sacamos el 15 y por ulimo dividimos entre 10 y 100 = 1000
+      const calculateDiscount = (
+        (getCartTotal() * 10 * descuento) /
+        1000
+      ).toFixed(2)
+      const roundToClientFavor = Math.ceil(Number(calculateDiscount) * 10)
+      const subtotal = (
+        (getCartTotal() * 10 - roundToClientFavor) /
+        10
+      ).toFixed(2)
+      return setSubTotal(subtotal)
+    }
+    setSubTotal(getCartTotal().toFixed(2))
+  }
 
   useEffect(() => {
     setItemsProducts(
@@ -53,24 +70,35 @@ export default function ShoppingCartPanel({
         size: item.size
       }))
     )
+    getDiscount()
+    return () => {
+      setCuponError('')
+      setDescuento(0)
+      setCodigoCupon('')
+      setDiscount('')
+      setLoading(false)
+    }
   }, [cartItems])
 
   if (!isOpen) return null
 
-  const getDiscount = () => {
-    if (disctount === codigoCupon) {
-      const calculateDiscount = ((getCartTotal() * 85) / 100).toFixed(2)
-      return (Math.round(Number(calculateDiscount) * 10) / 10).toFixed(2)
+  const validateCupon = async () => {
+    if (cuponCode) {
+      setLoading(true)
+      const response = await fetch(`/api/cupones/codigo/${cuponCode}`)
+      if (!response.ok) {
+        setCuponError('Codigo de cupon invalido')
+        setDescuento(0)
+        setCodigoCupon('')
+        setDiscount('')
+        setLoading(false)
+      }
+      const data = await response.json()
+      setDiscount(data.codigoCupon)
+      setDescuento(data.descuento)
+      getDiscount(data.codigoCupon, data.descuento)
+      setLoading(false)
     }
-    return getCartTotal().toFixed(2)
-  }
-
-  const countryCode = '51' // Código de país (cambiar según sea necesario)
-  const phoneNumber = '958284730'
-
-  const handleLocationSelect = (location: LatLng) => {
-    setLocation(location)
-    // Aquí puedes enviar los datos al backend o almacenarlos en el estado global.
   }
 
   return (
@@ -78,14 +106,36 @@ export default function ShoppingCartPanel({
       {/* Backdrop */}
       <div
         className='fixed inset-0 bg-black bg-opacity-50 z-auto'
-        onClick={onClose}
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) {
+            if (cuponError.length) {
+              setCuponError('')
+              setDescuento(0)
+              setCodigoCupon('')
+              setDiscount('')
+              setLoading(false)
+            }
+            onClose()
+          }
+        }}
       >
         {/* Cart Panel */}
-        <div className='cartPanel' onClick={(e) => e.stopPropagation()}>
+        <div className='cartPanel'>
           <div className='flex justify-between items-center mb-6'>
             <h2 className='text-xl font-semibold text-gray-800'>Tu Carrito</h2>
             <button
-              onClick={onClose}
+              onClick={() => {
+                if (cuponError.length) {
+                  setCuponError('')
+                  setDescuento(0)
+                  setCodigoCupon('')
+                  setDiscount('')
+                  setLoading(false)
+                }
+                setTimeout(() => {
+                  onClose()
+                }, 100)
+              }}
               className='text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100'
             >
               <X size={24} />
@@ -129,42 +179,62 @@ export default function ShoppingCartPanel({
                 ))}
               </ul>
               <div className='border-t border-gray-200 pt-4 mb-6'>
-                {mostrarCupon && (
-                  <>
-                    <div className='flex mb-2 justify-center'>
-                      <span className='text-gray-600'>Cupon:</span>
+                <>
+                  <div className='flex justify-center'>
+                    <span className='text-gray-600'>Cupon:</span>
+                    <div className='relative bg-white dark:bg-gray-600 w-full rounded-md ml-2'>
                       <input
                         type='text'
                         placeholder='Cupon de descuento...'
-                        className='text-sm w-full p-1 outline outline-1 border-0 rounded ml-2 outline-gray-300'
-                        value={disctount}
+                        className='text-sm p-1 outline outline-1 border-0 rounded ml-2 outline-none px-1 bg-transparent'
+                        value={cuponCode}
                         onChange={(event) => {
-                          setDiscount(event.target.value)
+                          setCuponCode(event.target.value.toUpperCase())
+                          if (cuponError) {
+                            setCuponError('')
+                          }
                         }}
                       />
+                      <button
+                        onClick={() => validateCupon()}
+                        className='absolute right-0 top-0 h-full bg-black p-1 rounded-r-md min-w-20 flex justify-center items-center'
+                      >
+                        {loading ? (
+                          <LuLoaderCircle className='animate-spin' />
+                        ) : (
+                          'Validar'
+                        )}
+                      </button>
                     </div>
-                    <div
-                      className={`flex justify-between text-sm ${
-                        disctount === codigoCupon
-                          ? 'text-red-400'
-                          : 'text-gray-600'
-                      }`}
-                    >
-                      <span>Descuento:</span>
-                      <span>{disctount === codigoCupon ? '-15%' : '0%'}</span>
-                    </div>
-                  </>
-                )}
+                  </div>
+                  {cuponError.length > 0 && (
+                    <span className='text-red-500 text-sm right-0 flex w-full justify-end'>
+                      Cupon invalido
+                    </span>
+                  )}
+                  <div
+                    className={`flex justify-between text-sm mt-1 ${
+                      cuponError.length > 0
+                        ? 'text-red-400'
+                        : descuento > 0
+                        ? 'text-green-600'
+                        : 'text-gray-600'
+                    }`}
+                  >
+                    <span>Descuento:</span>
+                    <span>{descuento ? descuento : 0}%</span>
+                  </div>
+                </>
 
                 <div className='flex justify-between items-center mb-4'>
                   <span className='text-gray-600'>Subtotal:</span>
                   <span className='text-xl font-semibold text-gray-800'>
-                    S/ {getDiscount()}
+                    S/ {subTotal}
                   </span>
                 </div>
                 <div
                   className={`flex justify-between text-xs ${
-                    disctount === codigoCupon ? 'text-red-400' : 'text-gray-600'
+                    discount === codigoCupon ? 'text-red-400' : 'text-gray-600'
                   } bg-green-100 rounded py-2 px-4 mb-2 border border-green-300`}
                 >
                   <span>
@@ -176,7 +246,7 @@ export default function ShoppingCartPanel({
                 <Button
                   onClick={clearCart}
                   variant='outline'
-                  className='w-full hover:bg-gray-100 transition-colors duration-200'
+                  className='w-full hover:bg-gray-300 dark:hover:text-black transition-colors duration-200'
                 >
                   Limpiar Carrito
                 </Button>
@@ -193,22 +263,12 @@ export default function ShoppingCartPanel({
         </div>
         {showCardClientName && (
           <FormToSend
-            clientName={clientName}
-            setClientName={setClientName}
-            address={address}
-            setAddress={setAddress}
-            deliveryCost={deliveryCost}
-            setDeliveryCost={setDeliveryCost}
-            getDiscount={getDiscount}
+            subTotal={subTotal}
             setShowCardClientName={setShowCardClientName}
-            countryCode={countryCode}
-            phoneNumber={phoneNumber}
-            setLocationToSend={setLocationToSend}
-            locationToSend={locationToSend}
-            agencia={agencia}
-            setAgencia={setAgencia}
             itemsProducts={itemsProducts}
-            disctount={disctount}
+            discountCode={discount}
+            onClose={onClose}
+            discountPercentage={descuento}
           />
         )}
       </div>
